@@ -1,0 +1,6 @@
+node_modules/
+data/
+config.json
+package-lock.json
+bot/commands/test.js
+bot/start.bat

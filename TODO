@@ -1,0 +1,21 @@
+Todo:
+  @critical guild settings command (config.js)
+  @high *Add caching to anilist users, similar to guild settings caching*. Make reset cache for user cmd. 
+  @low *Create a panel for changing guild settings via the website*
+          > Remove the code pertaining to clearing token cookies automatically
+          >     _^ Or, only save the token into the cookie, and retrieve token using secret_
+          > If the user has their discord account connected, when they load the panel
+          >   it should get their token from the cookies, and compare the results to the id cookie,
+          >   if they match, then they are verified.
+          
+          >   it then uses their token to fetch the guilds they are in. (change oauth perms)
+          >   if they are the owner of any of these, or have administrator, and the bot is in them,
+          >   it will show the panel. on settings save it checks all of this information once more.
+  @low Log events locally to a file to trace errors with all information about the command and sender.
+        ^^ winstonjs
+  @low Add error catching to player.js and skywars.js
+  @high Add another option when they log in with discord (anilist & osu not required);
+          a textbox for mc code input with instructions on how to get it.
+@high also make a settings list so it shows whats enabled/disabled tho your prob alrdy gonna do that lol
+
+        

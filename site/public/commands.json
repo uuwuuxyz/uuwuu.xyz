@@ -1,0 +1,61 @@
+{
+    "groups": {
+        "anime": [{
+            "group": "Anime",
+            "name": "anilist",
+            "arguments": "[username|@mention]",
+            "description": "Gets [username/@mention]'s anilist profile. If no username is specified, it will get the anilist profile of the sender if they have it linked using >linkaccounts.",
+            "mod-only": false
+        }, {
+            "group": "Anime",   
+            "name": "anime",
+            "arguments": "<anime name|id>",
+            "description": "Gets basic information about an anime.",
+            "mod-only": false
+        }],
+        "other": [{
+            "group": "Other",
+            "name": "settings",
+            "arguments": "[showanilist|showosu|showminecraft]",
+            "description": "Changes privacy settings that allows users to mention you to view your linked accounts",
+            "mod-only": false
+        }, {
+            "group": "Other",
+            "name": "linkaccounts",
+            "arguments": "",
+            "description": "Sends link with information on how to link your accounts with your discord account. If it is already linked, it will send the currently linked profile.",
+            "mod-only": false
+        }, {
+            "group": "Other",
+            "name": "osu",
+            "arguments": "[username|@mention]",
+            "description": "Gets [username/@mention]'s osu stats. If no username is specified, it will get the osu profile of the sender if they have it linked using >linkaccounts.",
+            "mod-only": false
+        }, {
+            "group": "Other",
+            "name": "uwu",
+            "arguments": "<sentence>",
+            "description": "uwuifies the sentence",
+            "mod-only": false
+        }],
+        "moderation": [{
+            "group": "Moderation",
+            "name": "config",
+            "arguments": "help",
+            "description": "Configure the guild settings",
+            "mod-only": true
+        }, {
+            "group": "Moderation",
+            "name": "quote",
+            "arguments": "<message link>",
+            "description": "Sends embed with the content of the linked message",
+            "mod-only": true
+        }, {
+            "group": "Moderation",
+            "name": "snipe",
+            "arguments": "",
+            "description": "Sends embed with content of the last deleted/edited message in the channel",
+            "mod-only": true
+        }]
+    }
+}

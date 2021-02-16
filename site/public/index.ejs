@@ -1,0 +1,230 @@
+<html>
+  <head>
+    <title>uuwuuu Discord Bot</title>
+    <!-- Image doesnt seem to be working -->
+    <meta property="og:title" content="uuwuu Discord Bot" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://uuwuu.xyz" />
+    <meta property="og:image" content="https://uuwuu.xyz/public/icon.png" />
+    <meta property="og:description" content="A Discord bot under development, targeted towards anime watchers and manga readers, alongside Minecraft Hypixel players." />
+    <meta name="theme-color" content="#ffb5eb">
+    
+    <!-- Can't get stylesheet to link so pasting in every file... wish I had a few more brain cells -->
+    <style>
+        body {
+          background-color: #ffb5eb;
+          color: #fff;
+          font-family: "Helvetica", "Arial", sans-sefir;
+          font-size: 20px;
+        }
+
+        .discordContainer {
+          display: flex;
+          width: 100%;
+          padding: 40px 0;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .discordContainer a {
+          background: #7289da;
+          color: #fff;
+          padding: 0 20px;
+          line-height: 35px;
+          display: block;
+          text-decoration: none;
+          border-radius: 3px;
+        }
+
+        .anilistContainer {
+          display: flex;
+          width: 100%;
+          padding: 40px 0;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .anilistContainer a {
+          background: #152232;
+          color: #fff;
+          padding: 0 20px;
+          line-height: 35px;
+          font-size: 20px;
+          display: block;
+          text-decoration: none;
+          border-radius: 3px;
+        }
+
+        .osuContainer {
+          display: flex;
+          width: 100%;
+          padding: 40px 0;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .osuContainer a {
+          background: #E6649E;
+          color: #fff;
+          padding: 0 20px;
+          line-height: 35px;
+          font-size: 20px;
+          display: block;
+          text-decoration: none;
+          border-radius: 3px;
+        }
+
+        h4 { text-align: center }
+
+        form {
+          display: flex;
+          width: 100%;
+          padding: 40px 0;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .minecraftContainer #codeInput {
+          background: #63AA52;
+          color: #fff;
+          padding: 0 20px;
+          line-height: 35px;
+          font-size: 20px;
+          display: block;
+          text-decoration: none;
+          border-radius: 3px;
+          border-color: #152232;
+        }
+
+        .minecraftContainer #submit {
+          background-color: #4CAF50; /* Green */
+          color: #fff;
+          padding: 9px 20px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 15px;
+          border-radius: 3px;
+          border-color: #000000;
+        }
+
+        .minecraftContainer #codeInput::placeholder {
+          color: #3A632F;
+        }
+
+        ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          background-color: #fff;
+        }
+
+        li {
+          float: left;
+        }
+
+        li a {
+          display: block;
+          color: black;
+          text-align: center;
+          padding: 22px 16px;
+          text-decoration: none;
+        }
+
+        li a:hover:not(.active) {
+          background-color: #c8ffff;
+        }
+
+        .active {
+          background-color: #4caf50;
+        }
+
+        .linkedaccounts {
+          display: inline-block;
+        }
+
+        .linkedaccounts h2 {
+          display: inline-block;
+        }
+
+        .linkedaccounts input {
+          margin-left: 10px;
+          color: white;
+          text-align: center;
+          background-color: #ff0015;
+          border-radius: 3px;
+          border-color: #000000;
+          padding: 9px 20px;
+          display: inline-block;
+          vertical-align:middle;
+        }
+    </style>
+  </head>
+
+  <body>
+    <ul>
+      <li>
+        <a href="./"><img src="./static/icon.png" /></a>
+      </li>
+      <li><a href="commands">Commands</a></li>
+      <li><a href="about">About</a></li>
+      <li><a href="invite">Invite</a></li>
+      <li><a href="feedback">Feedback</a></li>
+    </ul>
+
+    <div class="linkedaccounts">
+      <% if (discord_username) { %>
+        <br>
+        <h2>Discord Username: <%= discord_username %></h2>
+        <input type="button" onclick="window.location.replace('/public/api/discord/logout')" value="Logout">  
+        <% if (anilist_username) { %>
+          <br>
+          <h2>Anilist Username: <%= anilist_username %></h2>
+          <input type="button" onclick="window.location.replace('/public/api/anilist/unlink')" value="Unlink">       
+        <% } %>
+        <% if (osu_username) { %>
+          <br>
+          <h2>osu! Username: <%= osu_username %></h2>    
+          <input type="button" onclick="window.location.replace('/public/api/osu/unlink')" value="Unlink">  
+        <% } %>
+        <% if (minecraft_username) { %>
+          <br>
+          <h2>Minecraft Username: <%= minecraft_username %></h2>      
+          <input type="button" onclick="window.location.replace('/public/api/minecraft/unlink')" value="Unlink">  
+        <% } %>
+      <% } %>
+    </div>
+
+    <% if (discord_username) { %>
+        <!-- Logged in with discord -->
+        <% if (!anilist_username) { %>
+          <!-- Not logged in with anilist -->
+          <div class="anilistContainer">
+            <a href="/public/api/anilist/login">Login with Anilist</a>
+          </div>
+        <% } %>
+        <% if (!osu_username) { %>
+          <!-- Not logged in with osu -->
+          <div class="osuContainer">
+            <a href="/public/api/osu/login">Login with osu!</a>
+          </div>
+        <% } %>
+        <% if (!minecraft_username) { %>
+          <!-- Not logged in with minecraft -->
+          <div class="minecraftContainer">
+            <h4>Join <span style="color: #E6649E">srv.mc-oauth.net:25565</span> and enter the code here</h4>
+            <form action="/public/api/minecraft/login" method="POST">
+              <input id="codeInput" name="code" type="text" placeholder="code"> 
+              <input id="submit" type="submit">
+            </form>
+          </div>
+        <% } %>
+    <% } else { %>
+        <!-- Not logged in with discord -->
+        <div class="discordContainer">
+          <a href="/public/api/discord/login">Login with Discord<a>
+        </div>
+    <% } %>
+  </body>
+</html>
