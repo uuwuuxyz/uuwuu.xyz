@@ -13,9 +13,5 @@ Todo:
           >   it will show the panel. on settings save it checks all of this information once more.
   @low Log events locally to a file to trace errors with all information about the command and sender.
         ^^ winstonjs
-  @low Add error catching to player.js and skywars.js
-  @high Add another option when they log in with discord (anilist & osu not required);
-          a textbox for mc code input with instructions on how to get it.
-@high also make a settings list so it shows whats enabled/disabled tho your prob alrdy gonna do that lol
 
         
