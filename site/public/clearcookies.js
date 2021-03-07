@@ -12,10 +12,11 @@ const catchAsync = (fn) => (req, res, next) => {
 router.get(
 	"/",
 	catchAsync(async (req, res) => {
-		Object.keys(req.cookies).forEach((cookie) => {
-			res.cookie(cookie, "", {
-				maxAge: 0
-			});
+		Object.keys(req.session).forEach((cookie) => {
+			req.session[cookie] = "";
+			// res.cookie(cookie, "", {
+			// 	maxAge: 0
+			// });
 		});
 		if (process.env.DEV == "true") {
 			res.redirect("http://localhost/");

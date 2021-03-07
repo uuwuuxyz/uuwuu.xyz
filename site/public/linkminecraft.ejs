@@ -1,0 +1,28 @@
+<html>
+
+<head>
+    <%- include('./partials/head.ejs') %>
+        <title>Link Minecraft | uuwuu.xyz</title>
+</head>
+
+<header>
+    <%- include('./partials/header.ejs') %>
+</header>
+
+<body>
+
+    <h3>Join <span class="text-danger">srv.mc-oauth.net:25565</span> and enter the code given here:</h3>
+    <form action="/public/api/minecraft/login" method="POST">
+        <div class="mb-3">
+            <input id="codeInput" class="form-control" name="code" type="text" placeholder="code">
+        </div>
+        <input id="submit" class="btn btn-success" type="submit">
+    </form>
+
+</body>
+
+<footer>
+    <%- include('./partials/footer.ejs') %>
+</footer>
+
+</html>

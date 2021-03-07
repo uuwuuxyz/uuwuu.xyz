@@ -8,20 +8,15 @@ const oauth = new DiscordOauth2();
 const axios = require("axios");
 
 router.get("/unlink", async function (req, res) {
-	res.cookie("anilist_username", "", {
-		maxAge: 0
-	});
-	res.cookie("anilist_id", "", {
-		maxAge: 0
-	});
-	res.cookie("anilist_token", "", {
-		maxAge: 0
-	});
-	var userSettings = await mongoUtil.userSettings(req.cookies.discord_id);
+	req.session.anilist_username = "";
+	req.session.anilist_id = "";
+	req.session.anilist_token = "";
+
+	var userSettings = await mongoUtil.userSettings(req.session.discord_id);
 	userSettings.anilist_id = "";
 	userSettings.anilist_username = "";
-	mongoUtil.updateUser(req.cookies.discord_id, userSettings);
-	res.redirect("/");
+	mongoUtil.updateUser(req.session.discord_id, userSettings);
+	res.redirect("/me");
 });
 
 router.get("/login", (req, res) => {
@@ -70,23 +65,16 @@ router.get("/callback", async function (req, res) {
 	};
 
 	var userInfoRequest = await axios.post("https://graphql.anilist.co", { query: `mutation {UpdateUser {id name}}` }, userOptions);
+
 	var user = userInfoRequest.data.data.UpdateUser;
 
-	res.cookie("anilist_token", token, {
-		httpOnly: true
-	});
+	req.session.anilist_token = token;
+	req.session.anilist_username = user.name;
+	req.session.anilist_id = user.id;
 
-	res.cookie("anilist_username", user.name, {
-		httpOnly: true
-	});
-
-	res.cookie("anilist_id", user.id, {
-		httpOnly: true
-	});
-
-	const discordUser = await oauth.getUser(req.cookies.discord_token);
+	const discordUser = await oauth.getUser(req.session.discord_token);
 	const discordId = discordUser.id;
-	const cookieDiscordId = req.cookies.discord_id;
+	const cookieDiscordId = req.session.discord_id;
 
 	if (discordId === cookieDiscordId) {
 		var userSettings = await mongoUtil.userSettings(cookieDiscordId);
@@ -96,7 +84,7 @@ router.get("/callback", async function (req, res) {
 		mongoUtil.updateUser(cookieDiscordId, userSettings);
 	}
 
-	res.redirect("/");
+	res.redirect("/me");
 });
 
 module.exports = router;

@@ -114,6 +114,20 @@ module.exports = {
 	},
 
 	/**
+	 * Gets multiple guilds' settings by their ids
+	 * @param {String[]} ids
+	 * @returns {Promise<GuildSettings[]>}
+	 */
+	getGuilds: async function (ids) {
+		if (!_db) throw new Error("DatabaseNotInitialized");
+		console.log(ids);
+		return _db
+			.collection("guilds")
+			.find({ guild_id: { $in: ids } })
+			.toArray();
+	},
+
+	/**
 	 * Gets user settings by discord id
 	 * @param {String} id
 	 * @param {Discord.Client} [discordClient]
@@ -160,6 +174,13 @@ module.exports = {
 		var obj = {};
 		obj.$set = userSettings;
 		_db.collection("users").updateOne({ discord_id: id }, obj);
+	},
+
+	updateGuild: async function (id, guildSettings) {
+		if (!_db) throw new Error("DatabaseNotInitialized");
+		var obj = {};
+		obj.$set = guildSettings;
+		_db.collection("guilds").updateone({ guild_id: id }, obj);
 	},
 
 	userBase: {

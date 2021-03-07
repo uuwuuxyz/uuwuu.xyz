@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <%- include('../partials/head.ejs') %>
+</head>
+
+<header>
+    <%- include('../partials/header.ejs') %>
+</header>
+
+<body>
+
+    <% if (discord_guilds.length==0) { %>
+        <h3 class="text-center text-danger">No Guilds Found</h3>
+        <% } else { %>
+            <% discord_guilds.forEach(guild=> { %>
+                <div class="row align-items-center">
+                    <button class="btn btn-secondary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapse-<%=guild.id%>" aria-expanded="false"
+                        aria-controls="collapse-<%=guild.id%>">
+                        <%= guild.name %>
+                    </button>
+                </div>
+                <div class="collapse" id="collapse-<%=guild.id%>">
+                    <div class="card card-body">
+                        <% if (discord_guild_settings) { %>
+                            <!-- discord_guild_settings.find(a=> a.guild_id === guild.id); -->
+                            <% var guildSettings=discord_guild_settings.find(a=> a.guild_id == guild.id); %>
+                                <% if (guildSettings) { %>
+                                    Logs Channel: <%= guildSettings.settings.logs_channel || 'None' ; %>
+                                        <% } else { %>
+                                            Bot not in this guild! Click here to invite: _invite_
+                                            <% } %>
+                                                <% } else { %>
+                                                    <% } %>
+                    </div>
+                </div>
+                <br>
+                <% }); %>
+                    <% } %>
+</body>
+
+<footer>
+    <%- include('../partials/footer.ejs') %>
+</footer>
+
+</html>

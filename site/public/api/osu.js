@@ -8,20 +8,15 @@ const oauth = new DiscordOauth2();
 const axios = require("axios");
 
 router.get("/unlink", async function (req, res) {
-	res.cookie("osu_username", "", {
-		maxAge: 0
-	});
-	res.cookie("osu_id", "", {
-		maxAge: 0
-	});
-	res.cookie("osu_token", "", {
-		maxAge: 0
-	});
-	var userSettings = await mongoUtil.userSettings(req.cookies.discord_id);
+	req.session.osu_username = "";
+	req.session.osu_id = "";
+	req.session.osu_token = "";
+
+	var userSettings = await mongoUtil.userSettings(req.session.discord_id);
 	userSettings.osu_username = "";
 	userSettings.osu_id = "";
-	mongoUtil.updateUser(req.cookies.discord_id, userSettings);
-	res.redirect("/");
+	mongoUtil.updateUser(req.session.discord_id, userSettings);
+	res.redirect("/me");
 });
 
 router.get("/login", (req, res) => {
@@ -70,21 +65,13 @@ router.get("/callback", async function (req, res) {
 
 	var userInfoRequest = await axios.get("https://osu.ppy.sh/api/v2/me/", userOptions);
 
-	res.cookie("osu_token", token, {
-		httpOnly: true
-	});
+	req.session.osu_token = token;
+	req.session.osu_username = userInfoRequest.data.username;
+	req.session.osu_id = userInfoRequest.data.id;
 
-	res.cookie("osu_username", userInfoRequest.data.username, {
-		httpOnly: true
-	});
-
-	res.cookie("osu_id", userInfoRequest.data.id, {
-		httpOnly: true
-	});
-
-	const discordUser = await oauth.getUser(req.cookies.discord_token);
+	const discordUser = await oauth.getUser(req.session.discord_token);
 	const discordId = discordUser.id;
-	const cookieDiscordId = req.cookies.discord_id;
+	const cookieDiscordId = req.session.discord_id;
 
 	if (discordId === cookieDiscordId) {
 		var userSettings = await mongoUtil.userSettings(cookieDiscordId);
@@ -93,7 +80,7 @@ router.get("/callback", async function (req, res) {
 		mongoUtil.updateUser(cookieDiscordId, userSettings);
 	}
 
-	res.redirect("/");
+	res.redirect("/me");
 });
 
 module.exports = router;

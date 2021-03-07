@@ -1,0 +1,48 @@
+<footer class="text-center text-white mt-auto">
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        <a href="javascript:void()" class="btn btn-outline-info btn-lg ml-auto font-weight-bold" id="theme-toggler"
+            onclick="toggleTheme()" style="border: none !important" data-bs-toggle="tooltip" data-bs-placement="top"
+            title="Dark theme is not officially supported!"></a>
+        © 2021 Copyright:
+        <a class="text-white" href="https://uuwuu.xyz/">uuwuu.xyz</a>
+    </div>
+</footer>
+
+<script>
+    const LOCAL_STORAGE_KEY = "toggle-bootstrap-theme";
+    const LOCAL_META_DATA = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    const DARK_THEME_PATH = "https://bootswatch.com/4/darkly/bootstrap.min.css";
+    const DARK_STYLE_LINK = document.getElementById("dark-theme-style");
+    const THEME_TOGGLER = document.getElementById("theme-toggler");
+
+    let isDark = LOCAL_META_DATA && LOCAL_META_DATA.isDark;
+
+    if (isDark) {
+        enableDarkTheme();
+    } else {
+        disableDarkTheme();
+    }
+
+    function toggleTheme() {
+        isDark = !isDark;
+        if (isDark) {
+            enableDarkTheme();
+            THEME_TOGGLER.setAttribute("title", "");
+        } else {
+            disableDarkTheme();
+            THEME_TOGGLER.setAttribute("title", "Dark theme is not officially supported!");
+        }
+        const META = { isDark };
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(META));
+    }
+
+    function enableDarkTheme() {
+        DARK_STYLE_LINK.setAttribute("href", DARK_THEME_PATH);
+        THEME_TOGGLER.innerHTML = "🌙";
+    }
+
+    function disableDarkTheme() {
+        DARK_STYLE_LINK.setAttribute("href", "");
+        THEME_TOGGLER.innerHTML = "🌞";
+    }
+</script>

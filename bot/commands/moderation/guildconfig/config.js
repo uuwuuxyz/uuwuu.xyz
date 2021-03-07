@@ -54,6 +54,7 @@ module.exports = {
 						}
 
 						if (subCommand == "addmoderator") {
+							mongoUtil;
 						} else if (subCommand == "removemoderator") {
 						}
 					} else {

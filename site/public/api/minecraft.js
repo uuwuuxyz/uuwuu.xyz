@@ -7,16 +7,13 @@ const oauth = new DiscordOauth2();
 const axios = require("axios");
 
 router.get("/unlink", async function (req, res) {
-	res.cookie("minecraft_username", "", {
-		maxAge: 0
-	});
-	res.cookie("minecraft_uuid", "", {
-		maxAge: 0
-	});
-	var userSettings = await mongoUtil.userSettings(req.cookies.discord_id);
+	req.session.minecraft_username = "";
+	req.session.minecraft_uuid = "";
+
+	var userSettings = await mongoUtil.userSettings(req.session.discord_id);
 	userSettings.minecraft_uuid = "";
-	mongoUtil.updateUser(req.cookies.discord_id, userSettings);
-	res.redirect("/");
+	mongoUtil.updateUser(req.session.discord_id, userSettings);
+	res.redirect("/me");
 });
 
 router.post("/login", async function (req, res) {
@@ -31,17 +28,12 @@ router.post("/login", async function (req, res) {
 	var data = response.data;
 	if (!data || data.status != "success") return res.redirect("/error.html");
 
-	res.cookie("minecraft_username", data.username, {
-		httpOnly: true
-	});
+	req.session.minecraft_username = data.username;
+	req.session.minecraft_uuid = data.uuid;
 
-	res.cookie("minecraft_uuid", data.uuid, {
-		httpOnly: true
-	});
-
-	const discordUser = await oauth.getUser(req.cookies.discord_token);
+	const discordUser = await oauth.getUser(req.session.discord_token);
 	const discordId = discordUser.id;
-	const cookieDiscordId = req.cookies.discord_id;
+	const cookieDiscordId = req.session.discord_id;
 
 	if (discordId === cookieDiscordId) {
 		var userSettings = await mongoUtil.userSettings(cookieDiscordId);
@@ -50,7 +42,7 @@ router.post("/login", async function (req, res) {
 		mongoUtil.updateUser(cookieDiscordId, userSettings);
 	}
 
-	res.redirect("/");
+	res.redirect("/me");
 });
 
 module.exports = router;

@@ -10,26 +10,22 @@ const path = require("path");
 const btoa = require("btoa");
 
 router.get("/logout", async function (req, res) {
-	res.cookie("discord_username", "", {
-		maxAge: 0
-	});
-	res.cookie("discord_id", "", {
-		maxAge: 0
-	});
-	res.cookie("discord_token", "", {
-		maxAge: 0
-	});
+	req.session.discord_username = "";
+	req.session.discord_id = "";
+	req.session.discord_token = "";
+	req.session.discord_avatar = "";
+
 	res.redirect("/");
 });
 
 router.get("/login", (req, res) => {
 	if (process.env.DEV == "true") {
 		res.redirect(
-			"https://discord.com/api/oauth2/authorize?client_id=802515790233731072&redirect_uri=http%3A%2F%2Flocalhost%2Fpublic%2Fapi%2Fdiscord%2Fcallback&response_type=code&scope=identify"
+			"https://discord.com/api/oauth2/authorize?client_id=802515790233731072&redirect_uri=http%3A%2F%2Flocalhost%2Fpublic%2Fapi%2Fdiscord%2Fcallback&response_type=code&scope=identify%20guilds"
 		);
 	} else {
 		res.redirect(
-			"https://discord.com/api/oauth2/authorize?client_id=778936290090942514&redirect_uri=http%3A%2F%2Fuuwuu.xyz%2Fpublic%2Fapi%2Fdiscord%2Fcallback&response_type=code&scope=identify"
+			"https://discord.com/api/oauth2/authorize?client_id=778936290090942514&redirect_uri=http%3A%2F%2Fuuwuu.xyz%2Fpublic%2Fapi%2Fdiscord%2Fcallback&response_type=code&scope=identify%20guilds"
 		);
 	}
 });
@@ -63,29 +59,24 @@ router.get("/callback", async function (req, res) {
 			// Get user ID and username using the token just received
 			var token = data.access_token;
 
-			res.cookie("discord_token", token, {
-				httpOnly: true
-			});
+			req.session.discord_token = token;
 
 			oauth
 				.getUser(token)
 				.then((response) => {
-					res.cookie("discord_username", response.username + "#" + response.discriminator, {
-						httpOnly: true
-					});
-					res.cookie("discord_id", response.id, {
-						httpOnly: true
-					});
+					req.session.discord_avatar = response.avatar;
+					req.session.discord_username = response.username + "#" + response.discriminator;
+					req.session.discord_id = response.id;
 
 					mongoUtil.userSettings(response.id).then((s) => {
 						if (s) {
-							res.redirect(`/`);
+							res.redirect("/me");
 						} else {
 							var obj = mongoUtil.userBase;
 							obj.discord_id = response.id;
 
 							mongoUtil.insertUser(obj).then((x) => {
-								res.redirect(`/`);
+								res.redirect("/me");
 							});
 						}
 					});

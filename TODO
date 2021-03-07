@@ -13,5 +13,3 @@ Todo:
           >   it will show the panel. on settings save it checks all of this information once more.
   @low Log events locally to a file to trace errors with all information about the command and sender.
         ^^ winstonjs
-
-        

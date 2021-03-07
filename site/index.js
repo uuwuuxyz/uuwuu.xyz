@@ -1,44 +1,105 @@
 const path = require("path");
 const mongoUtil = require("../mongoUtil");
+const config = require("../config.json");
+const express = require("express");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const MongoStore = require("connect-mongo").default;
+const app = express();
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const ratelimiter = require("./ratelimiter");
+const { v4: uuidv4 } = require("uuid");
+const winston = require("winston");
+const expressWinston = require("express-winston");
+const logging = require("./logging");
 
 mongoUtil.connectToServer(function (err, client) {
 	if (err) console.log(err);
 	console.log("Connected to database");
+	logging.init();
 
-	const express = require("express");
-	const bodyParser = require("body-parser");
-	const cookieParser = require("cookie-parser");
+	app.use(
+		expressWinston.logger({
+			transports: [
+				new winston.transports.Loggly({
+					subdomain: "uuwuu",
+					inputToken: config.loggly_token,
+					json: true,
+					tags: ["site", "Winston-NodeJS"]
+				})
+			]
+		})
+	);
 
-	const app = express();
+	ratelimiter.start();
+
+	app.use(
+		helmet({
+			contentSecurityPolicy: false
+		})
+	);
 	app.set("view engine", "ejs");
-	app.use(cookieParser());
+	app.use(cookieParser(config.secret));
 	app.use(bodyParser.json());
 	app.use(
 		bodyParser.urlencoded({
 			extended: true
 		})
 	);
+	app.set("trust proxy", 1);
+	app.use(
+		session({
+			secret: config.secret,
+			cookie: { maxAge: Date.now() + 30 * 86400 * 1000, secure: true },
+			saveUninitialized: false,
+			resave: false,
+			store: MongoStore.create({
+				mongoUrl: `mongodb+srv://regex:${config.mongo_password}@cluster0.sswc3.mongodb.net/bot?retryWrites=true&w=majority`,
+				dbName: "site"
+			})
+		})
+	);
+	app.use(mongoSanitize());
+
+	app.use(function (req, res, next) {
+		var points = 5;
+		if (req.url.includes("api") || req.url.includes("me")) {
+			points = 10;
+		}
+		ratelimiter
+			.getRateLimiter()
+			.consume(req.ip, points)
+			.then((rateLimiterRes) => {
+				res.locals.discord_username = req.session.discord_username;
+				res.locals.discord_id = req.session.discord_id;
+				res.locals.discord_avatar = req.session.discord_avatar;
+				res.locals.anilist_username = req.session.anilist_username;
+				res.locals.anilist_id = req.session.anilist_id;
+				res.locals.osu_username = req.session.osu_username;
+				res.locals.osu_id = req.session.osu_id;
+				res.locals.minecraft_username = req.session.minecraft_username;
+				res.locals.minecraft_uuid = req.session.minecraft_uuid;
+				next();
+			})
+			.catch((rateLimiterRes) => {
+				return res.status(429).end();
+			});
+	});
 
 	app.get("/", (req, res) => {
-		res.status(200).render(path.join(__dirname, "./public/index.ejs"), {
-			discord_username: req.cookies.discord_username,
-			discord_id: req.cookies.discord_id,
-			discord_token: req.cookies.discord_token,
-			anilist_username: req.cookies.anilist_username,
-			anilist_id: req.cookies.anilist_id,
-			anilist_token: req.cookies.anilist_token,
-			osu_username: req.cookies.osu_username,
-			osu_id: req.cookies.osu_id,
-			osu_token: req.cookies.osu_token,
-			minecraft_username: req.cookies.minecraft_username,
-			minecraft_uuid: req.cookies.minecraft_uuid
-		});
+		res.status(200).render(path.join(__dirname, "./public/index.ejs"));
+	});
+
+	app.get("/error", (req, res) => {
+		res.status(200).render(path.join(__dirname, "./public/error.ejs"));
 	});
 
 	app.use("/static", express.static(path.join(__dirname, "public/static")));
 
 	app.get("/about", (req, res) => {
-		res.sendFile(path.join(__dirname, "./public/about.html"));
+		res.status(200).render(path.join(__dirname, "./public/about.ejs"));
 	});
 
 	app.get("/feedback", (req, res) => {
@@ -51,28 +112,56 @@ mongoUtil.connectToServer(function (err, client) {
 		});
 	});
 
+	app.get("/linkminecraft", (req, res) => {
+		res.status(200).render(path.join(__dirname, "./public/linkminecraft.ejs"));
+	});
+
 	app.use("/public/api/discord/", require("./public/api/discord"));
 	app.use("/public/api/anilist/", require("./public/api/anilist"));
 	app.use("/public/api/minecraft/", require("./public/api/minecraft"));
 	app.use("/public/api/osu/", require("./public/api/osu"));
 	app.use("/public/clearcookies/", require("./public/clearcookies"));
 
+	app.use("/me/", require("./public/me/me"));
 	app.use((err, req, res, next) => {
+		var error = {};
+		error.code = err.code || "NONE";
+		error.id = uuidv4();
+		error.timestamp = new Date().toISOString();
+		error.path = req.url;
+		error.method = req.method;
+		error.ip = req.ip;
+		winston.info(error);
+
 		switch (err.message) {
 			case "NoCodeProvided":
-				return res.status(400).send({
-					status: "ERROR",
-					error: err.message
+				return res.status(400).render(path.join(__dirname, "./public/error.ejs"), {
+					error
 				});
 			default:
-				return res.status(500).send({
-					status: "ERROR",
-					error: err.message
+				return res.status(500).render(path.join(__dirname, "./public/error.ejs"), {
+					error
 				});
 		}
 	});
 
 	app.listen(80, () => {
 		console.info("Running on port 80");
+		logging.get().info("Site Started");
+	});
+
+	app.get("*", function (req, res) {
+		var error = {};
+		error.code = "INVALID_PAGE";
+		error.id = uuidv4();
+		error.timestamp = new Date().toISOString();
+		error.path = req.url;
+		error.method = req.method;
+		error.ip = req.ip;
+		winston.info(error);
+
+		return res.status(400).render(path.join(__dirname, "./public/error.ejs"), {
+			error
+		});
 	});
 });

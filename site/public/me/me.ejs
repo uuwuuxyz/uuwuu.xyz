@@ -1,0 +1,80 @@
+<html>
+
+<head>
+    <%- include('../partials/head.ejs') %>
+        <style>
+            #avatar {
+                border: 5px solid #7289DA;
+                border-radius: 10px;
+            }
+        </style>
+</head>
+
+<header>
+    <%- include('../partials/header.ejs') %>
+</header>
+
+<body>
+    <div class="d-flex justify-content-center align-items-center">
+        <img id="avatar" src="https://cdn.discordapp.com/avatars/<%=discord_id%>/<%=discord_avatar%>.webp">
+    </div>
+    <h3 class="text-center">
+        <%= discord_username %>
+    </h3>
+
+    <br>
+
+    <div class="text-center">
+        <a class="btn btn-primary" href="/me/settings" role="button">Settings</a>
+        <a class="btn btn-primary" href="/me/guilds" role="button">Guilds</a>
+    </div>
+
+    <hr class="mt-2 mb-3" />
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <table class="table table-responsive">
+                <tody>
+                    <tr>
+                        <% if (linked_anilist_username) { %>
+                            <td><a class="text-danger" href="/public/api/anilist/unlink">Unlink</a></td>
+                            <% } else { %>
+                                <td><a class="text-danger" href="/public/api/anilist/login">Link</a></td>
+                                <% } %>
+                                    <td>Anilist</td>
+                                    <td>
+                                        <%= linked_anilist_username %>
+                                    </td>
+                    </tr>
+                    <tr>
+                        <% if (linked_osu_username) { %>
+                            <td><a class="text-danger" href="/public/api/osu/unlink">Unlink</a></td>
+                            <% } else { %>
+                                <td><a class="text-danger" href="/public/api/osu/login">Link</a></td>
+                                <% } %>
+                                    <td>osu!</td>
+                                    <td>
+                                        <%= linked_osu_username %>
+                                    </td>
+                    </tr>
+                    <tr>
+                        <% if (linked_minecraft_uuid) { %>
+                            <td><a class="text-danger" href="/public/api/minecraft/unlink">Unlink</a></td>
+                            <% } else { %>
+                                <td><a class="text-danger" href="/linkminecraft/">Link</a></td>
+                                <% } %>
+                                    <td>Minecraft</td>
+                                    <td>
+                                        <%= linked_minecraft_uuid %>
+                                    </td>
+                    </tr>
+                </tody>
+            </table>
+        </div>
+    </div>
+</body>
+
+<footer>
+    <%- include('../partials/footer.ejs') %>
+</footer>
+
+</html>

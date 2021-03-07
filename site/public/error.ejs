@@ -1,0 +1,62 @@
+<html>
+
+<head>
+    <%- include('./partials/head.ejs') %>
+        <title>Error | uuwuu.xyz</title>
+</head>
+
+<header>
+    <%- include('./partials/header.ejs') %>
+</header>
+
+<body>
+    <h1 class="text-danger">Something went wrong!</h1>
+    <br>
+    <p class="fw-bold">Error code: <span class="text-primary">
+            <% if (typeof error.code !="undefined" ) { %>
+                <%= error.code %>
+                    <% } %>
+        </span>
+    </p>
+
+    <p class="fw-bold">Error ID: <span class="text-primary">
+            <% if (typeof error.id !="undefined" ) { %>
+                <%= error.id %>
+                    <% } %>
+        </span>
+    </p>
+
+    <p class="fw-bold">Method: <span class="text-primary">
+            <% if (typeof error.method !="undefined" ) { %>
+                <%= error.method %>
+                    <% } %>
+        </span></p>
+
+    <p class="fw-bold">Path: <span class="text-primary">
+            <% if (typeof error.path !="undefined" ) { %>
+                <%= error.path %>
+                    <% } %>
+        </span></p>
+
+    <p class="fw-bold">IP Address: <span class="text-primary">
+            <% if (typeof error.ip !="undefined" ) { %>
+                <%= error.ip %>
+                    <% } %>
+        </span></p>
+
+    <p class="fw-bold">Timestamp: <span class="text-primary">
+            <% if (typeof error.timestamp !="undefined" ) { %>
+                <%= error.timestamp %>
+                    <% } %>
+        </span>
+    </p>
+
+    <p class="text-center text-danger">Please contact <a class="text-info"
+            href="https://twitter.com/RegexMC">@RegexMC</a> if this persists</p>
+</body>
+
+<footer>
+    <%- include('./partials/footer.ejs') %>
+</footer>
+
+</html>

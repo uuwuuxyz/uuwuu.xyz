@@ -18,7 +18,7 @@ module.exports = {
             >art 	fate    ,    astolfo    ,     nsfw?
                     ^^ series    ^^ character     ^^ nsfw
         */
-		// Currently NSFW not supported due to vague TOS on my VPS host's side.
+		// Currently NSFW not supported due to vague TOS on my VPS' host's side.
 
 		var arguments = args.join(" ").split(",");
 
@@ -64,12 +64,16 @@ module.exports = {
 
 		var seriesAlbumId = seriesAlbum[0].id;
 
+		if (!seriesAlbumId) message.reply(utils.getErrorEmbed("Cannot find series. Please go to https://art.uuwuu.xyz to find available series."));
+
 		var characterAlbum = categories.filter((x) => x.name.toLowerCase() === characterName && Number(x.id_uppercat) === seriesAlbumId);
 
-		if (seriesAlbum.length == 0)
+		if (characterAlbum.length == 0)
 			return message.reply(utils.getErrorEmbed("Cannot find character. Please go to https://art.uuwuu.xyz to find available series."));
 
 		var characterAlbumId = characterAlbum[0].id;
+
+		if (!characterAlbumId) return message.reply(utils.getErrorEmbed("Cannot find character. Please go to https://art.uuwuu.xyz to find available series."));
 
 		var imagesAlbumId;
 
