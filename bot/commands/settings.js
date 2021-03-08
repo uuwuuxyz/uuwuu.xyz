@@ -3,6 +3,7 @@ const { Client } = require("@zikeji/hypixel");
 const utils = require("../utils");
 const mongoUtil = require("../../mongoUtil");
 const options = ["true", "false", "t", "f", "on", "off"];
+require("../ExtendedMessage");
 
 module.exports = {
 	cooldown: 20,

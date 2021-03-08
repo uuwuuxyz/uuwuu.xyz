@@ -6,6 +6,7 @@ const path = require("path");
 const mongoUtil = require("../../../mongoUtil");
 const anilistQuery = fs.readFileSync(path.resolve(__dirname, "../../../data/anilist/queries/anilist"), "utf8");
 const request = require("request");
+require("../../ExtendedMessage");
 
 module.exports = {
 	cooldown: 20,
@@ -29,14 +30,19 @@ module.exports = {
 		if (id) {
 			var userSettings = await mongoUtil.userSettings(id, discordClient);
 
-			if (!userSettings || !userSettings.anilist_username) {
-				return message.reply(utils.getErrorEmbed("This user does not have an anilist account linked"));
-			}
+			if (id != message.author.id) {
+				if (!userSettings || !userSettings.anilist_username) {
+					return message.reply(utils.getErrorEmbed("This user does not have an anilist account linked"));
+				}
 
-			if (!userSettings.settings.privacy.show_anilist) {
-				return message.reply(utils.getErrorEmbed("This user has their anilist account hidden!"));
+				if (!userSettings.settings.privacy.show_anilist) {
+					return message.reply(utils.getErrorEmbed("This user has their anilist account hidden!"));
+				}
+			} else {
+				if (!userSettings || !userSettings.anilist_username) {
+					return message.reply(utils.getErrorEmbed("You do not have an anilist account linked"));
+				}
 			}
-
 			username = userSettings.anilist_username;
 		}
 

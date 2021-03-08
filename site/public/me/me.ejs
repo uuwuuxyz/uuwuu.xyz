@@ -15,62 +15,89 @@
 </header>
 
 <body>
-    <div class="d-flex justify-content-center align-items-center">
-        <img id="avatar" src="https://cdn.discordapp.com/avatars/<%=discord_id%>/<%=discord_avatar%>.webp">
-    </div>
-    <h3 class="text-center">
-        <%= discord_username %>
-    </h3>
-
-    <br>
-
-    <div class="text-center">
-        <a class="btn btn-primary" href="/me/settings" role="button">Settings</a>
-        <a class="btn btn-primary" href="/me/guilds" role="button">Guilds</a>
-    </div>
-
-    <hr class="mt-2 mb-3" />
-    <div class="row justify-content-center">
-        <div class="col-auto">
-            <table class="table table-responsive">
-                <tody>
-                    <tr>
-                        <% if (linked_anilist_username) { %>
-                            <td><a class="text-danger" href="/public/api/anilist/unlink">Unlink</a></td>
-                            <% } else { %>
-                                <td><a class="text-danger" href="/public/api/anilist/login">Link</a></td>
+    <% if (typeof settingsUpdated !="undefined" ) { %>
+        <% if (settingsUpdated) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Updated your settings!</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+                <% } %>
+                    <% if (typeof guildsUpdated !="undefined" ) { %>
+                        <% if (guildsUpdated) { %>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>Updated guild!</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            <% } %>
                                 <% } %>
-                                    <td>Anilist</td>
-                                    <td>
-                                        <%= linked_anilist_username %>
-                                    </td>
-                    </tr>
-                    <tr>
-                        <% if (linked_osu_username) { %>
-                            <td><a class="text-danger" href="/public/api/osu/unlink">Unlink</a></td>
-                            <% } else { %>
-                                <td><a class="text-danger" href="/public/api/osu/login">Link</a></td>
-                                <% } %>
-                                    <td>osu!</td>
-                                    <td>
-                                        <%= linked_osu_username %>
-                                    </td>
-                    </tr>
-                    <tr>
-                        <% if (linked_minecraft_uuid) { %>
-                            <td><a class="text-danger" href="/public/api/minecraft/unlink">Unlink</a></td>
-                            <% } else { %>
-                                <td><a class="text-danger" href="/linkminecraft/">Link</a></td>
-                                <% } %>
-                                    <td>Minecraft</td>
-                                    <td>
-                                        <%= linked_minecraft_uuid %>
-                                    </td>
-                    </tr>
-                </tody>
-            </table>
-        </div>
-    </div>
+
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <img id="avatar"
+                                            src="https://cdn.discordapp.com/avatars/<%=discord_id%>/<%=discord_avatar%>.webp">
+                                    </div>
+                                    <h3 class="text-center">
+                                        <%= discord_username %>
+                                    </h3>
+
+                                    <br>
+
+                                    <div class="text-center">
+                                        <a class="btn btn-primary" href="/me/settings" role="button">Settings</a>
+                                        <a class="btn btn-primary" href="/me/guilds" role="button">Guilds</a>
+                                    </div>
+
+                                    <hr class="mt-2 mb-3" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-auto">
+                                            <table class="table table-responsive">
+                                                <tody>
+                                                    <tr>
+                                                        <% if (user_settings.anilist_username) { %>
+                                                            <td><a class="text-danger"
+                                                                    href="/public/api/anilist/unlink">Unlink</a></td>
+                                                            <% } else { %>
+                                                                <td><a class="text-danger"
+                                                                        href="/public/api/anilist/login">Link</a>
+                                                                </td>
+                                                                <% } %>
+                                                                    <td>Anilist</td>
+                                                                    <td>
+                                                                        <%= user_settings.anilist_username %>
+                                                                    </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <% if (user_settings.osu_username) { %>
+                                                            <td><a class="text-danger"
+                                                                    href="/public/api/osu/unlink">Unlink</a></td>
+                                                            <% } else { %>
+                                                                <td><a class="text-danger"
+                                                                        href="/public/api/osu/login">Link</a></td>
+                                                                <% } %>
+                                                                    <td>osu!</td>
+                                                                    <td>
+                                                                        <%= user_settings.osu_username %>
+                                                                    </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <% if (user_settings.minecraft_uuid) { %>
+                                                            <td><a class="text-danger"
+                                                                    href="/public/api/minecraft/unlink">Unlink</a>
+                                                            </td>
+                                                            <% } else { %>
+                                                                <td><a class="text-danger"
+                                                                        href="/linkminecraft/">Link</a></td>
+                                                                <% } %>
+                                                                    <td>Minecraft</td>
+                                                                    <td>
+                                                                        <%= user_settings.minecraft_uuid %>
+                                                                    </td>
+                                                    </tr>
+                                                </tody>
+                                            </table>
+                                        </div>
+                                    </div>
 </body>
 
 <footer>

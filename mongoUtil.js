@@ -105,8 +105,10 @@ module.exports = {
 	 */
 	guildSettings: async function (id, discordClient) {
 		if (!_db) throw new Error("DatabaseNotInitialized");
-		if (discordClient.guildSettings.has(id)) {
-			return discordClient.guildSettings.get(id);
+		if (discordClient) {
+			if (discordClient.guildSettings.has(id)) {
+				return discordClient.guildSettings.get(id);
+			}
 		}
 		return _db.collection("guilds").findOne({
 			guild_id: id
@@ -120,7 +122,6 @@ module.exports = {
 	 */
 	getGuilds: async function (ids) {
 		if (!_db) throw new Error("DatabaseNotInitialized");
-		console.log(ids);
 		return _db
 			.collection("guilds")
 			.find({ guild_id: { $in: ids } })
@@ -155,6 +156,15 @@ module.exports = {
 	},
 
 	/**
+	 * Insert multiple guilds into the database
+	 * @param {GuildSettings[]} guilds
+	 */
+	insertGuilds: async function (guilds) {
+		if (!_db) throw new Error("DatabaseNotInitialized");
+		_db.collection("guilds").insertMany(guilds);
+	},
+
+	/**
 	 * Inserts a guild into the database
 	 * @param {UserSettings} userSettings
 	 */
@@ -180,7 +190,7 @@ module.exports = {
 		if (!_db) throw new Error("DatabaseNotInitialized");
 		var obj = {};
 		obj.$set = guildSettings;
-		_db.collection("guilds").updateone({ guild_id: id }, obj);
+		_db.collection("guilds").updateOne({ guild_id: id }, obj);
 	},
 
 	userBase: {
@@ -196,6 +206,20 @@ module.exports = {
 				show_osu: true,
 				show_minecraft: true
 			}
+		}
+	},
+
+	guildBase: {
+		guild_id: "",
+		owner_id: "",
+		settings: {
+			logs_channel: "",
+			enable_logs: false,
+			command_channels: [],
+			disable_commands: [],
+			limit_command_channels: false,
+			moderators: [],
+			moderator_commands: ["snipe"]
 		}
 	}
 };

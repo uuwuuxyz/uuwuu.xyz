@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const { Client } = require("@zikeji/hypixel");
+require("../../ExtendedMessage");
 
 module.exports = {
 	cooldown: 0,

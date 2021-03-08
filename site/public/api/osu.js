@@ -26,7 +26,7 @@ router.get("/login", (req, res) => {
 		);
 	} else {
 		res.redirect(
-			"https://osu.ppy.sh/oauth/authorize?client_id=4884&redirect_uri=http%3A%2F%2Fuuwuu.xyz%2Fpublic%2Fapi%2Fosu%2Fcallback&response_type=code&scope=identify"
+			"https://osu.ppy.sh/oauth/authorize?client_id=4884&redirect_uri=https%3A%2F%2Fuuwuu.xyz%2Fpublic%2Fapi%2Fosu%2Fcallback&response_type=code&scope=identify"
 		);
 	}
 });
@@ -35,7 +35,7 @@ router.get("/callback", async function (req, res) {
 	var dev = process.env.DEV == "true";
 	var clientId = dev ? 4885 : 4884;
 	var clientSecret = dev ? config.osu_dev_secret : config.osu_secret;
-	var redirectUri = dev ? "http://localhost/public/api/osu/callback" : "http://uuwuu.xyz/public/api/osu/callback";
+	var redirectUri = dev ? "http://localhost/public/api/osu/callback" : "https://uuwuu.xyz/public/api/osu/callback";
 
 	const params = new URLSearchParams();
 	params.append("grant_type", "authorization_code");

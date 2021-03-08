@@ -42,12 +42,10 @@ mongoUtil.connectToServer(function (err, client) {
 	);
 	app.set("view engine", "ejs");
 	app.use(cookieParser(config.secret));
-	app.use(bodyParser.json());
-	app.use(
-		bodyParser.urlencoded({
-			extended: true
-		})
-	);
+
+	app.use(express.json());
+	app.use(express.urlencoded({ extended: true }));
+
 	app.set("trust proxy", 1);
 	app.use(
 		session({
@@ -66,7 +64,11 @@ mongoUtil.connectToServer(function (err, client) {
 	app.use(function (req, res, next) {
 		var points = 5;
 		if (req.url.includes("api") || req.url.includes("me")) {
-			points = 10;
+			if (req.url.includes("settings")) {
+				points = 30;
+			} else {
+				points = 10;
+			}
 		}
 		ratelimiter
 			.getRateLimiter()
@@ -102,8 +104,16 @@ mongoUtil.connectToServer(function (err, client) {
 		res.status(200).render(path.join(__dirname, "./public/about.ejs"));
 	});
 
+	app.get("/invite", (req, res) => {
+		res.status(200).render(path.join(__dirname, "./public/invite.ejs"));
+	});
+
 	app.get("/feedback", (req, res) => {
-		res.sendFile(path.join(__dirname, "./public/feedback.html"));
+		res.status(200).render(path.join(__dirname, "./public/feedback.ejs"));
+	});
+
+	app.get("/thanks", (req, res) => {
+		res.status(200).render(path.join(__dirname, "./public/thanks.ejs"));
 	});
 
 	app.get("/commands", (req, res) => {
@@ -124,6 +134,7 @@ mongoUtil.connectToServer(function (err, client) {
 
 	app.use("/me/", require("./public/me/me"));
 	app.use((err, req, res, next) => {
+		console.log(err);
 		var error = {};
 		error.code = err.code || "NONE";
 		error.id = uuidv4();
@@ -131,7 +142,13 @@ mongoUtil.connectToServer(function (err, client) {
 		error.path = req.url;
 		error.method = req.method;
 		error.ip = req.ip;
+		error.err = err;
+		error.headers = req.headers;
+		error.session = req.session;
 		winston.info(error);
+		error.err = null;
+		error.headers = null;
+		error.session = null;
 
 		switch (err.message) {
 			case "NoCodeProvided":
@@ -158,7 +175,13 @@ mongoUtil.connectToServer(function (err, client) {
 		error.path = req.url;
 		error.method = req.method;
 		error.ip = req.ip;
+		error.err = err;
+		error.headers = req.headers;
+		error.session = req.session;
 		winston.info(error);
+		error.err = null;
+		error.headers = null;
+		error.session = null;
 
 		return res.status(400).render(path.join(__dirname, "./public/error.ejs"), {
 			error

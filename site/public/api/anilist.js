@@ -26,7 +26,7 @@ router.get("/login", (req, res) => {
 		);
 	} else {
 		res.redirect(
-			"https://anilist.co/api/v2/oauth/authorize?client_id=4221&redirect_uri=http%3A%2F%2Fuuwuu.xyz%2Fpublic%2Fapi%2Fanilist%2Fcallback&response_type=code"
+			"https://anilist.co/api/v2/oauth/authorize?client_id=4221&redirect_uri=https%3A%2F%2Fuuwuu.xyz%2Fpublic%2Fapi%2Fanilist%2Fcallback&response_type=code"
 		);
 	}
 });
@@ -36,7 +36,7 @@ router.get("/callback", async function (req, res) {
 	var dev = process.env.DEV == "true";
 	var clientId = dev ? 4766 : 4221;
 	var clientSecret = dev ? config.anilist_dev_secret : config.anilist_secret;
-	var redirectUri = dev ? "http://localhost/public/api/anilist/callback" : "http://uuwuu.xyz/public/api/anilist/callback";
+	var redirectUri = dev ? "http://localhost/public/api/anilist/callback" : "https://uuwuu.xyz/public/api/anilist/callback";
 
 	const params = new URLSearchParams();
 	params.append("grant_type", "authorization_code");

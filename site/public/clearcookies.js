@@ -21,7 +21,7 @@ router.get(
 		if (process.env.DEV == "true") {
 			res.redirect("http://localhost/");
 		} else {
-			res.redirect("http://uuwuu.xyz/");
+			res.redirect("https://uuwuu.xyz/");
 		}
 	})
 );

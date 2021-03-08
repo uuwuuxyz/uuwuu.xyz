@@ -4,6 +4,7 @@ const { Client } = require("@zikeji/hypixel");
 const utils = require("../utils");
 const mongoUtil = require("../../mongoUtil");
 const fetch = require("node-fetch");
+require("../ExtendedMessage");
 
 module.exports = {
 	cooldown: 5,

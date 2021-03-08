@@ -3,6 +3,7 @@ const Discord = require("discord.js");
 const { Client } = require("@zikeji/hypixel");
 const utils = require("../../utils");
 const { default: axios } = require("axios");
+require("../../ExtendedMessage");
 
 module.exports = {
 	cooldown: 5,

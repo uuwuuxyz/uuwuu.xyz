@@ -7,6 +7,7 @@ const cacheManager = require("cache-manager");
 const mongoUtil = require("../mongoUtil");
 const { default: axios } = require("axios");
 const Enmap = require("enmap");
+require("./ExtendedMessage");
 
 const cache = cacheManager.caching({
 	store: "memory",

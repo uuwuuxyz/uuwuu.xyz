@@ -2,10 +2,11 @@ const Discord = require("discord.js");
 const { Client } = require("@zikeji/hypixel");
 const { Uwuifier } = require("uwuifier");
 const utils = require("../utils");
+require("../ExtendedMessage");
 
 const uwuifier = new Uwuifier({
 	spaces: {
-		faces: 0.3,
+		faces: 0.2,
 		actions: 0.075,
 		stutters: 0.075
 	},

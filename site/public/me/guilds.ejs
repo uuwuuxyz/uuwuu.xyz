@@ -24,15 +24,200 @@
                 <div class="collapse" id="collapse-<%=guild.id%>">
                     <div class="card card-body">
                         <% if (discord_guild_settings) { %>
-                            <!-- discord_guild_settings.find(a=> a.guild_id === guild.id); -->
                             <% var guildSettings=discord_guild_settings.find(a=> a.guild_id == guild.id); %>
                                 <% if (guildSettings) { %>
-                                    Logs Channel: <%= guildSettings.settings.logs_channel || 'None' ; %>
-                                        <% } else { %>
+                                    <!-- <form id="form" method="POST"> -->
+                                    <form action="/me/guilds/update" method="POST">
+                                        <div class="form-group row">
+                                            <label for="guildId_<%=guild.id%>" class="col-sm-2 col-form-label">Guild
+                                                ID</label>
+                                            <div class="col-sm-10">
+                                                <input name="guild_id" type="text" readonly
+                                                    class="form-control-plaintext" id="guildId_<%=guild.id%>"
+                                                    value="<%=guild.id%>">
+                                            </div>
+                                        </div>
+                                        <hr class="mt-2 mb-3" />
+                                        <div class="form-group row">
+                                            <label for="logsEnabled_<%=guild.id%>"
+                                                class="col-sm-2 col-form-label">Logs</label>
+                                            <div class="col-sm-10">
+                                                <div class="form-check form-switch">
+                                                    <% if (guildSettings.settings.enable_logs) { %>
+                                                        <input name="enable_logs" class="form-check-input"
+                                                            type="checkbox" id="logsEnabled_<%=guild.id%>" checked>
+                                                        <% } else { %>
+                                                            <input name="enable_logs" class="form-check-input"
+                                                                type="checkbox" id="logsEnabled_<%=guild.id%>">
+                                                            <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="logsChannel_<%=guild.id%>" class="col-sm-2 col-form-label">Logs
+                                                Channel</label>
+                                            <div class="col-sm-10">
+                                                <input placeholder="Channel ID" name="logs_channel" type="text"
+                                                    class="form-control" id="logsChannel_<%=guild.id%>"
+                                                    value="<%= guildSettings.settings.logs_channel || 'None' ; %>">
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group row">
+                                            <label for="limitCommandChannels_<%=guild.id%>"
+                                                class="col-sm-2 col-form-label">Limit Command Channels</label>
+                                            <div class="col-sm-10">
+                                                <div class="form-check form-switch">
+                                                    <% if (guildSettings.settings.limit_command_channels) { %>
+                                                        <input name="limit_command_channels" class="form-check-input"
+                                                            type="checkbox" id="limitCommandChannels_<%=guild.id%>"
+                                                            checked>
+                                                        <% } else { %>
+                                                            <input name="limit_command_channels"
+                                                                class="form-check-input" type="checkbox"
+                                                                id="limitCommandChannels_<%=guild.id%>">
+                                                            <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="commandChannels_<%=guild.id%>"
+                                                class="col-sm-2 col-form-label">Command Channels</label>
+                                            <div class="col-sm-10">
+                                                <div id="commandChannels_<%=guild.id%>">
+                                                    <div class="list-group">
+                                                        <div class="list-group-item">
+                                                            <div class="d-grid gap-2">
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Channel ID" />
+                                                                <button type="button"
+                                                                    class="btn btn-success addItem">Add</button>
+                                                            </div>
+                                                        </div>
+                                                        <% if (typeof guildSettings.settings.command_channels
+                                                            !='undefined' ) { %>
+                                                            <% guildSettings.settings.command_channels.forEach(g=> { %>
+                                                                <div class="input-group list-group-item gap-2">
+                                                                    <input readonly type="text"
+                                                                        name="command_channels_<%=g%>" value="<%=g%>">
+                                                                    <span onclick="this.parentElement.remove()"
+                                                                        class="text-end text-danger fw-bold">&times;</span>
+                                                                    </span>
+                                                                </div>
+
+                                                                <% }); %>
+                                                                    <% } %>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group row">
+                                            <label for="disableCommands_<%=guild.id%>"
+                                                class="col-sm-2 col-form-label">Disabled Commands</label>
+                                            <div class="col-sm-10">
+                                                <div id="disableCommands_<%=guild.id%>">
+                                                    <div class="list-group">
+                                                        <div class="list-group-item">
+                                                            <div class="d-grid gap-2">
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Command Name" />
+                                                                <button type="button"
+                                                                    class="btn btn-success addItem">Add</button>
+                                                            </div>
+                                                        </div>
+                                                        <% if (typeof guildSettings.settings.disable_commands
+                                                            !='undefined' ) { %>
+                                                            <% guildSettings.settings.disable_commands.forEach(g=> { %>
+                                                                <div class="input-group list-group-item gap-2">
+                                                                    <input readonly type="text"
+                                                                        name="disable_commands_<%=g%>" value="<%=g%>">
+                                                                    <span onclick="this.parentElement.remove()"
+                                                                        class="text-end text-danger fw-bold">&times;</span>
+                                                                    </span>
+                                                                </div>
+                                                                <% }); %>
+                                                                    <% } %>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group row">
+                                            <label for="moderators_<%=guild.id%>"
+                                                class="col-sm-2 col-form-label">Moderators</label>
+                                            <div class="col-sm-10">
+                                                <div id="moderators_<%=guild.id%>">
+                                                    <div class="list-group">
+                                                        <div class="list-group-item">
+                                                            <div class="d-grid gap-2">
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="User ID" />
+                                                                <button type="button"
+                                                                    class="btn btn-success addItem">Add</button>
+                                                            </div>
+                                                        </div>
+                                                        <% if (typeof guildSettings.settings.moderators !='undefined' )
+                                                            { %>
+                                                            <% guildSettings.settings.moderators.forEach(g=> { %>
+                                                                <div class="input-group list-group-item gap-2">
+                                                                    <input readonly type="text" name="moderators_<%=g%>"
+                                                                        value="<%=g%>">
+                                                                    <span onclick="this.parentElement.remove()"
+                                                                        class="text-end text-danger fw-bold">&times;</span>
+                                                                    </span>
+                                                                </div>
+                                                                <% }); %>
+                                                                    <% } %>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="moderatorCommands_<%=guild.id%>"
+                                                class="col-sm-2 col-form-label">Moderator Only Commands</label>
+                                            <div class="col-sm-10">
+                                                <div id="moderatorCommands_<%=guild.id%>">
+                                                    <div class="list-group">
+                                                        <div class="list-group-item">
+                                                            <div class="d-grid gap-2">
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Command Name" />
+                                                                <button type="button"
+                                                                    class="btn btn-success addItem">Add</button>
+                                                            </div>
+                                                        </div>
+                                                        <% if (typeof guildSettings.settings.moderator_commands
+                                                            !='undefined' ) { %>
+                                                            <% guildSettings.settings.moderator_commands.forEach(g=> {
+                                                                %>
+                                                                <div class="input-group list-group-item gap-2">
+                                                                    <input readonly type="text"
+                                                                        name="moderator_commands_<%=g%>" value="<%=g%>">
+                                                                    <span onclick="this.parentElement.remove()"
+                                                                        class="text-end text-danger fw-bold">&times;</span>
+                                                                    </span>
+                                                                </div>
+                                                                <% }); %>
+                                                                    <% } %>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr class="mt-2 mb-3" />
+                                        <input id="submit" class="btn btn-success" type="submit" value="Save">
+                                    </form>
+                                    <% } else { %>
+                                        <h3>
                                             Bot not in this guild! Click here to invite: _invite_
-                                            <% } %>
-                                                <% } else { %>
-                                                    <% } %>
+                                        </h3>
+                                        <% } %>
+                                            <% } else { %>
+                                                <% } %>
                     </div>
                 </div>
                 <br>
@@ -45,3 +230,38 @@
 </footer>
 
 </html>
+
+<script>
+    $('.addItem').click(function () {
+        var input = $(this).prev().val();
+        var list = $(this).parent().parent().parent();
+
+        var div = list.parent();
+
+        var name = "";
+
+        if (div.attr('id').startsWith("disabledCommands_")) {
+            name = `disabled_commands_${input}`;
+        } else if (div.attr('id').startsWith("moderatorCommands_")) {
+            name = `moderator_commands_${input}`;
+        } else if (div.attr('id').startsWith("moderators_")) {
+            name = `moderators_${input}`;
+        } else if (div.attr('id').startsWith("disableCommands_")) {
+            name = `disable_commands_${input}`;
+        } else if (div.attr('id').startsWith("commandChannels_")) {
+            name = `command_channels_${input}`;
+        }
+
+        var found = false;
+        list.children().each(function () {
+            if ($(this).children().first().val() === `${input}`) {
+                found = true;
+                return false;
+            }
+        });
+        if (found) return;
+
+        list.append(`<div class="input-group list-group-item gap-2"> <input readonly type="text" name="${name}" value="${input}">
+        <span onclick="this.parentElement.remove()" class="text-end text-danger fw-bold">&times;</span></span></div>`);
+    });
+</script>

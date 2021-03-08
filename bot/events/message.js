@@ -1,7 +1,6 @@
 const config = require("../../config.json");
 const Discord = require("discord.js");
 const { Client } = require("@zikeji/hypixel");
-const mongoUtil = require("../../mongoUtil");
 const utils = require("../utils");
 
 /**
@@ -16,67 +15,25 @@ module.exports = async (discordClient, hypixelClient, message) => {
 	const command = args.shift().toLowerCase();
 	const cmd = discordClient.commands.get(command);
 	if (!cmd) return;
-
-	var guildId = message.guild.id;
-	var senderId = message.author.id;
-	var guildOwner = message.guild.ownerID;
+	const senderId = message.author.id;
 
 	if (cmd.admin && !config.admins.includes(senderId)) return;
 
-	var guild_settings;
+	const guildSettings = discordClient.guildSettings.get(message.guild.id);
 
-	if (!discordClient.guildSettings.has(guildId)) {
-		var guildSettings = await mongoUtil.guildSettings(guildId, discordClient);
+	if (guildSettings.settings.disabled_commands.includes(command)) return;
 
-		if (guildSettings) {
-			guild_settings = guildSettings.settings;
-		} else {
-			var obj = {
-				guild_id: guildId,
-				owner_id: guildOwner,
-				settings: {
-					logs_channel: "",
-					enable_logs: false,
-					command_channels: [],
-					disable_commands: [],
-					limit_command_channels: false,
-					moderators: [],
-					moderator_commands: ["snipe", "quote"]
-				}
-			};
-			guild_settings = obj.settings;
-			discordClient.guildSettings.set(guildId, obj);
-			mongoUtil.insertGuild(obj);
+	const guildCommandChannels = guildSettings.settings.command_channels;
+	const guildModeratorCommands = guildSettings.settings.moderator_commands;
+
+	if (!message.member.hasPermission("ADMINISTRATOR")) {
+		const guildModerators = guildSettings.settings.moderators;
+		if (guildModeratorCommands.includes(command)) {
+			if (!guildModerators.includes(senderId)) return utils.getErrorEmbed("You cannot use this command!");
 		}
-	} else {
-		guild_settings = discordClient.guildSettings.get(guildId).settings;
-	}
 
-	var guildModerators = guild_settings.moderators;
-	var guildModeratorCommands = guild_settings.moderator_commands;
-	var guildDisabledCommands = guild_settings.disabled_commands;
-	var guildCommandChannels = guild_settings.command_channels;
-	var isSenderAdmin = message.member.hasPermission("ADMINISTRATOR");
-
-	if (!isSenderAdmin) {
-		if (guildOwner != senderId) {
-			if (!guildModerators.includes(senderId)) {
-				if (guildModeratorCommands.includes(cmd)) {
-					return message.reply(utils.getErrorEmbed("You cannot use this command"));
-				} else if (guildDisabledCommands.includes(cmd)) {
-					return message.reply(utils.getErrorEmbed("This command is disabled in this guild"));
-				}
-			}
-		}
-	}
-
-	if (!isSenderAdmin) {
-		if (guildOwner != senderId) {
-			if (!guildModerators.includes(senderId)) {
-				if (!guildCommandChannels.includes(message.channel.id)) {
-					return message.reply(utils.getErrorEmbed("Commands are disabled in this channel"));
-				}
-			}
+		if (!guildModerators.includes(senderId)) {
+			if (guildSettings.settings.limit_command_channels && !guildCommandChannels.includes(message.channel.id)) return;
 		}
 	}
 

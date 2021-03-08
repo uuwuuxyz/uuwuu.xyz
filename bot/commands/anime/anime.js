@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const queryBody = fs.readFileSync(path.resolve(__dirname, "../../../data/anilist/queries/anime"), "utf8");
 const request = require("request");
+require("../../ExtendedMessage");
 
 module.exports = {
 	cooldown: 20,

@@ -1,34 +1,22 @@
 const Discord = require("discord.js");
+const { guildBase } = require("../../mongoUtil");
 const mongoUtil = require("../../mongoUtil");
 
 /**
  * @param {Discord.Client} discordClient
+ * @param {Client} hypixelClient
  * @param {Discord.Guild} guild
  */
-module.exports = (discordClient, guild) => {
+module.exports = async (discordClient, hypixelClient, guild) => {
+	console.log("Joined Guild " + guild.id);
 	if (!discordClient.guildSettings.has(guild.id)) {
-		// this will return true if the bot left and joined the guild in the same session
-		mongoUtil.guildSettings(guild.id, discordClient).then((guildSettings) => {
-			// this will return a guildSettings object if the bot was kicked when it was offline or in a different session, and already has settings defined
-			if (!guildSettings) {
-				var guildSettings = {
-					//default settings
-					guild_id: guild.id,
-					owner_id: guild.ownerID,
-					settings: {
-						logs_channel: "",
-						enable_logs: false,
-						command_channels: [],
-						disable_commands: [],
-						limit_command_channels: false,
-						moderators: [],
-						moderator_commands: ["snipe", "quote"]
-					}
-				};
+		const fetchedGuildSettings = await mongoUtil.guildSettings(guild.id);
+		if (!fetchedGuildSettings) {
+			var guildSettings = guildBase;
+			guildSettings.guild_id = guild.id;
 
-				discordClient.guildSettings.set(guild.id, guildSettings);
-				mongoUtil.insertGuild(guildSettings);
-			}
-		});
+			discordClient.guildSettings.set(guild.id, guildSettings);
+			mongoUtil.insertGuild(guildSettings);
+		}
 	}
 };

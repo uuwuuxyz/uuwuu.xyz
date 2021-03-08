@@ -25,7 +25,7 @@ router.get("/login", (req, res) => {
 		);
 	} else {
 		res.redirect(
-			"https://discord.com/api/oauth2/authorize?client_id=778936290090942514&redirect_uri=http%3A%2F%2Fuuwuu.xyz%2Fpublic%2Fapi%2Fdiscord%2Fcallback&response_type=code&scope=identify%20guilds"
+			"https://discord.com/api/oauth2/authorize?client_id=778936290090942514&redirect_uri=https%3A%2F%2Fuuwuu.xyz%2Fpublic%2Fapi%2Fdiscord%2Fcallback&response_type=code&scope=identify%20guilds"
 		);
 	}
 });
@@ -39,7 +39,7 @@ router.get("/callback", async function (req, res) {
 	if (process.env.DEV == "true") {
 		exchangeParams.append("redirect_uri", "http://localhost/public/api/discord/callback");
 	} else {
-		exchangeParams.append("redirect_uri", "http://uuwuu.xyz/public/api/discord/callback");
+		exchangeParams.append("redirect_uri", "https://uuwuu.xyz/public/api/discord/callback");
 	}
 
 	const exchangeOptions = {

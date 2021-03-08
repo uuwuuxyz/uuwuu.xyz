@@ -5,6 +5,7 @@ const fetch = require("node-fetch");
 const sagiri = require("sagiri");
 const client = sagiri(config.saucenao_api_key);
 const utils = require("../../utils");
+require("../../ExtendedMessage");
 
 module.exports = {
 	cooldown: 20,
