@@ -40,18 +40,6 @@
         }],
         "moderation": [{
             "group": "Moderation",
-            "name": "config",
-            "arguments": "help",
-            "description": "Configure the guild settings",
-            "mod-only": true
-        }, {
-            "group": "Moderation",
-            "name": "quote",
-            "arguments": "<message link>",
-            "description": "Sends embed with the content of the linked message",
-            "mod-only": true
-        }, {
-            "group": "Moderation",
             "name": "snipe",
             "arguments": "",
             "description": "Sends embed with content of the last deleted/edited message in the channel",

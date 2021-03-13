@@ -1,5 +1,4 @@
 Todo:
-  @critical guild settings command (config.js)
   @high *Add caching to anilist users, similar to guild settings caching*. Make reset cache for user cmd. 
   @low Log events locally to a file to trace errors with all information about the command and sender.
         ^^ winstonjs

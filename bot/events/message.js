@@ -21,15 +21,20 @@ module.exports = async (discordClient, hypixelClient, message) => {
 
 	const guildSettings = discordClient.guildSettings.get(message.guild.id);
 
-	if (guildSettings.settings.disabled_commands.includes(command)) return;
+	if (!guildSettings)
+		return message.reply("Something went *extremely* wrong. Contact `Regex#1028` immediately. Give me 12 hours to respond cause timezones.");
+
+	if (guildSettings.settings.disabled_commands) if (guildSettings.settings.disabled_commands.includes(command)) return;
 
 	const guildCommandChannels = guildSettings.settings.command_channels;
 	const guildModeratorCommands = guildSettings.settings.moderator_commands;
 
 	if (!message.member.hasPermission("ADMINISTRATOR")) {
 		const guildModerators = guildSettings.settings.moderators;
-		if (guildModeratorCommands.includes(command)) {
-			if (!guildModerators.includes(senderId)) return utils.getErrorEmbed("You cannot use this command!");
+		if (guildModeratorCommands) {
+			if (guildModeratorCommands.includes(command)) {
+				if (!guildModerators.includes(senderId)) return utils.getErrorEmbed("You cannot use this command!");
+			}
 		}
 
 		if (!guildModerators.includes(senderId)) {

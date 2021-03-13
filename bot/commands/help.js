@@ -20,9 +20,7 @@ module.exports = {
 			if (!/[A-z]/.test(args[0])) return utils.getErrorEmbed("Please limit command names to A-z");
 
 			Object.keys(commands.groups).forEach((key) => {
-				for (var i = 0; i < commands.groups[key].length; i++) {
-					allCommands.push(commands.groups[key][i]);
-				}
+				allCommands = allCommands.concat(commands.groups[key]);
 			});
 
 			var filteredCommands = allCommands.filter((c) => c.name.startsWith(args[0].toLowerCase()));

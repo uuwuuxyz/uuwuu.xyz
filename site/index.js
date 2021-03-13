@@ -2,7 +2,6 @@ const path = require("path");
 const mongoUtil = require("../mongoUtil");
 const config = require("../config.json");
 const express = require("express");
-const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const MongoStore = require("connect-mongo").default;
@@ -90,15 +89,17 @@ mongoUtil.connectToServer(function (err, client) {
 			});
 	});
 
+	app.use("/static", express.static(path.join(__dirname, "public/static")));
+
 	app.get("/", (req, res) => {
 		res.status(200).render(path.join(__dirname, "./public/index.ejs"));
 	});
 
-	app.get("/error", (req, res) => {
-		res.status(200).render(path.join(__dirname, "./public/error.ejs"));
+	app.get("/commands", (req, res) => {
+		res.status(200).render(path.join(__dirname, "./public/commands.ejs"), {
+			commands: require("./public/commands.json")
+		});
 	});
-
-	app.use("/static", express.static(path.join(__dirname, "public/static")));
 
 	app.get("/about", (req, res) => {
 		res.status(200).render(path.join(__dirname, "./public/about.ejs"));
@@ -108,31 +109,29 @@ mongoUtil.connectToServer(function (err, client) {
 		res.status(200).render(path.join(__dirname, "./public/invite.ejs"));
 	});
 
-	app.get("/feedback", (req, res) => {
-		res.status(200).render(path.join(__dirname, "./public/feedback.ejs"));
-	});
-
 	app.get("/thanks", (req, res) => {
 		res.status(200).render(path.join(__dirname, "./public/thanks.ejs"));
 	});
 
-	app.get("/commands", (req, res) => {
-		res.status(200).render(path.join(__dirname, "./public/commands.ejs"), {
-			commands: require("./public/commands.json")
-		});
+	app.get("/feedback", (req, res) => {
+		res.status(200).render(path.join(__dirname, "./public/feedback.ejs"));
 	});
 
 	app.get("/linkminecraft", (req, res) => {
 		res.status(200).render(path.join(__dirname, "./public/linkminecraft.ejs"));
 	});
 
+	app.get("/error", (req, res) => {
+		res.status(200).render(path.join(__dirname, "./public/error.ejs"));
+	});
+
+	app.use("/me/", require("./public/me/me"));
 	app.use("/public/api/discord/", require("./public/api/discord"));
 	app.use("/public/api/anilist/", require("./public/api/anilist"));
 	app.use("/public/api/minecraft/", require("./public/api/minecraft"));
 	app.use("/public/api/osu/", require("./public/api/osu"));
 	app.use("/public/clearcookies/", require("./public/clearcookies"));
 
-	app.use("/me/", require("./public/me/me"));
 	app.use((err, req, res, next) => {
 		console.log(err);
 		var error = {};
@@ -175,7 +174,6 @@ mongoUtil.connectToServer(function (err, client) {
 		error.path = req.url;
 		error.method = req.method;
 		error.ip = req.ip;
-		error.err = err;
 		error.headers = req.headers;
 		error.session = req.session;
 		winston.info(error);
