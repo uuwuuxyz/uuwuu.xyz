@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { Client } = require("@zikeji/hypixel");
+const { Client } = require("hypixel-api-reborn");
 const utils = require("../../utils");
 const fs = require("fs");
 const path = require("path");

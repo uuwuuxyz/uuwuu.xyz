@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { Client } = require("@zikeji/hypixel");
+const { Client } = require("hypixel-api-reborn");
 require("../../ExtendedMessage");
 
 module.exports = {
@@ -55,8 +55,8 @@ module.exports = {
 							});
 						});
 				} else {
-					message.channel
-						.send(clean(evaled), {
+					message
+						.reply(clean(evaled), {
 							code: "xl"
 						})
 						.catch((err) => {

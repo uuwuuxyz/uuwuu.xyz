@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const { guildBase } = require("../../mongoUtil");
 const mongoUtil = require("../../mongoUtil");
 const message = require("./message");
+const permissions = ["ADD_REACTIONS", "EMBED_LINKS", "MANAGE_MESSAGES", "READ_MESSAGE_HISTORY", "SEND_MESSAGES", "USE_EXTERNAL_EMOJIS", "VIEW_CHANNEL"];
 
 /**
  * @param {Discord.Client} discordClient
@@ -10,6 +11,14 @@ const message = require("./message");
  */
 module.exports = async (discordClient, hypixelClient, guild) => {
 	console.log("Joined Guild " + guild.id);
+
+	// // Haven't tested
+	// const me = guild.me;
+	// permissions.forEach((permission) => {
+	// 	if (!me.hasPermission(permission)) {
+	// 		guild.leave();
+	// 	}
+	// });
 
 	guild.owner
 		.send(

@@ -1,6 +1,6 @@
 const config = require("../../../config.json");
 const Discord = require("discord.js");
-const { Client } = require("@zikeji/hypixel");
+const { Client } = require("hypixel-api-reborn");
 const fetch = require("node-fetch");
 const sagiri = require("sagiri");
 const client = sagiri(config.saucenao_api_key);
@@ -20,7 +20,6 @@ module.exports = {
 		var img = "";
 		if (message.attachments.size > 0) {
 			img = message.attachments.first().url;
-
 			if (args.length > 0) {
 				if (args[0] != "sauce") {
 					findSauce(img, "trace")

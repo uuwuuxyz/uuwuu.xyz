@@ -1,0 +1,110 @@
+<html>
+	<head>
+		<%- include('./partials/head.ejs') %>
+		<title>Score Calculator | uuwuu.xyz</title>
+	</head>
+
+	<header><%- include('./partials/header.ejs') %></header>
+
+	<body>
+		<div class="container">
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" value="" id="weightenabled" />
+				<label class="form-check-label" for="weightenabled"> Weight </label>
+			</div>
+			<div id="info" style="display: none" class="form-text">Weight must add up to 5 to keep the average under or equal to 10</div>
+			<table class="table" aria-describedby="emailHelp">
+				<thead>
+					<tr>
+						<th scope="col">Type</th>
+						<th scope="col">Score</th>
+						<th id="weight" scope="col" style="width: 10%; display: none">Weight</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row">Story</th>
+						<td><input type="number" value="1" min="0" max="10" class="form-control" id="story" /></td>
+						<td><input type="number" value="1" min="0" max="10" class="form-control" id="story_weight" style="display: none" /></td>
+					</tr>
+					<tr>
+						<th scope="row">Animation</th>
+						<td><input type="number" value="1" min="0" max="10" class="form-control" id="animation" /></td>
+						<td><input type="number" value="1" min="0" max="10" class="form-control" id="animation_weight" style="display: none" /></td>
+					</tr>
+					<tr>
+						<th scope="row">Sound</th>
+						<td><input type="number" value="1" min="0" max="10" class="form-control" id="sound" /></td>
+						<td><input type="number" value="1" min="0" max="10" class="form-control" id="sound_weight" style="display: none" /></td>
+					</tr>
+					<tr>
+						<th scope="row">Character</th>
+						<td><input type="number" value="1" min="0" max="10" class="form-control" id="character" /></td>
+						<td><input type="number" value="1" min="0" max="10" class="form-control" id="character_weight" style="display: none" /></td>
+					</tr>
+					<tr>
+						<th scope="row">Enjoyment</th>
+						<td><input type="number" value="1" min="0" max="10" class="form-control" id="enjoyment" /></td>
+						<td><input type="number" value="1" min="0" max="10" class="form-control" id="enjoyment_weight" style="display: none" /></td>
+					</tr>
+					<tr>
+						<th scope="row">Average</th>
+						<td>
+							<fieldset disabled>
+								<input type="number" value="1" min="0" max="10" class="form-control" id="average" readonly />
+							</fieldset>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</body>
+
+	<footer><%- include('./partials/footer.ejs') %></footer>
+</html>
+
+<script>
+	$("input").on("change", () => {
+		var story = Number($("#story").val());
+		const storyWeight = Number($("#story_weight").val());
+		var animation = Number($("#animation").val());
+		const animationWeight = Number($("#animation_weight").val());
+		var sound = Number($("#sound").val());
+		const soundWeight = Number($("#sound_weight").val());
+		var character = Number($("#character").val());
+		const characterWeight = Number($("#character_weight").val());
+		var enjoyment = Number($("#enjoyment").val());
+		const enjoymentWeight = Number($("#enjoyment_weight").val());
+
+		if ($("#weightenabled").is(":checked")) {
+			story = story * storyWeight;
+			animation = animation * animationWeight;
+			sound = sound * soundWeight;
+			character = character * characterWeight;
+			enjoyment = enjoyment * enjoymentWeight;
+		}
+
+		const average = ((story + animation + sound + character + enjoyment) / 5).toFixed(2);
+		$("#average").val(average);
+	});
+
+	$("#weightenabled").on("change", () => {
+		if ($("#weightenabled").is(":checked")) {
+			$("#info").css("display", "block");
+			$("#weight").css("display", "table-cell");
+			$("#story_weight").css("display", "table-cell");
+			$("#animation_weight").css("display", "table-cell");
+			$("#sound_weight").css("display", "table-cell");
+			$("#character_weight").css("display", "table-cell");
+			$("#enjoyment_weight").css("display", "table-cell");
+		} else {
+			$("#info").css("display", "none");
+			$("#weight").css("display", "none");
+			$("#story_weight").css("display", "none");
+			$("#animation_weight").css("display", "none");
+			$("#sound_weight").css("display", "none");
+			$("#character_weight").css("display", "none");
+			$("#enjoyment_weight").css("display", "none");
+		}
+	});
+</script>

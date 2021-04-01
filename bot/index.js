@@ -1,7 +1,7 @@
 require("dotenv").config();
 const config = require("../config.json");
 const Discord = require("discord.js");
-const { Client } = require("@zikeji/hypixel");
+const Hypixel = require("hypixel-api-reborn");
 const fs = require("fs");
 const cacheManager = require("cache-manager");
 const mongoUtil = require("../mongoUtil");
@@ -19,27 +19,12 @@ mongoUtil.connectToServer(function (err, client) {
 	if (err) console.log(err);
 	console.log("Connected to database");
 
-	const hypixelClient = new Client(config.hypixel_api_key, {
-		cache: {
-			get(key) {
-				return cache.get(`hypixel:${key}`);
-			},
-			set(key, value) {
-				let ttl = 5 * 60;
-
-				if (key.startsWith("resources:")) {
-					ttl = 24 * 60 * 60;
-				} else if (key === "skyblock:bazaar") {
-					ttl = 10;
-				} else if (key.startsWith("skyblock:auctions:")) {
-					ttl = 60;
-				}
-				return cache.set(`hypixel:${key}`, value);
-			}
-		}
-	});
-
 	var devEnv = process.env.DEV == "true";
+
+	const hypixelClient = new Hypixel.Client(config.hypixel_api_key, {
+		cache: true,
+		cacheTime: 300
+	});
 
 	const discordClient = new Discord.Client();
 
@@ -61,9 +46,6 @@ mongoUtil.connectToServer(function (err, client) {
 	axios.get("https://art.uuwuu.xyz/ws.php?format=json&method=pwg.categories.getList&recursive=true").then((response) => {
 		discordClient.artCache.set("categories", response.data.result.categories);
 	});
-
-	var logging = require("./logging");
-	logging.run(discordClient);
 
 	discordClient.on("messageUpdate", (oldMessage, newMessage) => {
 		if (

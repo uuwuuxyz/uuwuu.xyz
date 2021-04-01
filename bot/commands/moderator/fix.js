@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
-const { Client } = require("@zikeji/hypixel");
+const { Client } = require("hypixel-api-reborn");
+require("../../ExtendedMessage");
 
 module.exports = {
 	cooldown: 5,
@@ -11,7 +12,7 @@ module.exports = {
 	 * @param {String[]} args
 	 */
 	async run(discordClient, hypixelClient, message, args) {
-		var embed = discordClient.snipe.get(message.guild.id)[message.channel.id];
-		if (embed) message.reply({ embed });
+		message.delete();
+		message.channel.stopTyping();
 	}
 };

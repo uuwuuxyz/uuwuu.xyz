@@ -27,6 +27,7 @@ class Message extends Structures.get("Message") {
 		}
 
 		const { data, files } = await apiMessage.resolveFiles();
+		this.channel.stopTyping();
 		return this.client.api.channels[this.channel.id].messages.post({ data, files }).then((d) => this.client.actions.MessageCreate.handle(d).message);
 	}
 }

@@ -121,6 +121,10 @@ mongoUtil.connectToServer(function (err, client) {
 		res.status(200).render(path.join(__dirname, "./public/linkminecraft.ejs"));
 	});
 
+	app.get("/calc", (req, res) => {
+		res.status(200).render(path.join(__dirname, "./public/calc.ejs"));
+	});
+
 	app.get("/error", (req, res) => {
 		res.status(200).render(path.join(__dirname, "./public/error.ejs"));
 	});

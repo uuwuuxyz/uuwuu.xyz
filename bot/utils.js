@@ -170,5 +170,5 @@ module.exports = {
 			}
 		}
 		return null;
-	},
+	}
 };

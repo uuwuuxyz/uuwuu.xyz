@@ -216,10 +216,10 @@ module.exports = {
 			logs_channel: "",
 			enable_logs: false,
 			command_channels: [],
-			disable_commands: [],
+			disable_commands: ["art"],
 			limit_command_channels: false,
 			moderators: [],
-			moderator_commands: ["snipe"]
+			moderator_commands: ["fix"]
 		}
 	}
 };

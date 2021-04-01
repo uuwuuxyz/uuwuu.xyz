@@ -3,6 +3,7 @@ const { Client } = require("@zikeji/hypixel");
 const mongoUtil = require("../../mongoUtil");
 const { diff } = require("jimp");
 const { guildBase } = require("../../mongoUtil");
+const permissions = ["ADD_REACTIONS", "EMBED_LINKS", "MANAGE_MESSAGES", "READ_MESSAGE_HISTORY", "SEND_MESSAGES", "USE_EXTERNAL_EMOJIS", "VIEW_CHANNEL"];
 
 /**
  * @param {Discord.Client} discordClient

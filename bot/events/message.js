@@ -64,5 +64,6 @@ module.exports = async (discordClient, hypixelClient, message) => {
 		setTimeout(() => timestamps.delete(senderId), cooldownAmount);
 	}
 
+	message.channel.startTyping();
 	cmd.run(discordClient, hypixelClient, message, args);
 };

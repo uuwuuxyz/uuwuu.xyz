@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { Client } = require("@zikeji/hypixel");
+const { Client } = require("hypixel-api-reborn");
 const utils = require("../../utils");
 const fs = require("fs");
 const path = require("path");
@@ -29,18 +29,13 @@ module.exports = {
 
 		if (id) {
 			var userSettings = await mongoUtil.userSettings(id, discordClient);
+			if (!userSettings || !userSettings.anilist_username) {
+				return message.reply(utils.getErrorEmbed("This user does not have an anilist account linked"));
+			}
 
 			if (id != message.author.id) {
-				if (!userSettings || !userSettings.anilist_username) {
-					return message.reply(utils.getErrorEmbed("This user does not have an anilist account linked"));
-				}
-
 				if (!userSettings.settings.privacy.show_anilist) {
 					return message.reply(utils.getErrorEmbed("This user has their anilist account hidden!"));
-				}
-			} else {
-				if (!userSettings || !userSettings.anilist_username) {
-					return message.reply(utils.getErrorEmbed("You do not have an anilist account linked"));
 				}
 			}
 			username = userSettings.anilist_username;

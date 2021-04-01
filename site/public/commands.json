@@ -12,6 +12,12 @@
             "arguments": "<anime name|id>",
             "description": "Gets basic information about an anime.",
             "mod-only": false
+        }, {
+            "group": "Anime",   
+            "name": "art",
+            "arguments": "<random|series>, <character>",
+            "description": "Gets some art of a character from https://art.uuwuu.xyz. No NSFW. Command is disabled by default.",
+            "mod-only": false
         }],
         "other": [{
             "group": "Other",
@@ -40,9 +46,9 @@
         }],
         "moderation": [{
             "group": "Moderation",
-            "name": "snipe",
+            "name": "fix",
             "arguments": "",
-            "description": "Sends embed with content of the last deleted/edited message in the channel",
+            "description": "If the bot is stuck typing in a channel, stop it from doing so.",
             "mod-only": true
         }]
     }

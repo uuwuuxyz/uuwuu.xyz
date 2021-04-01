@@ -1,6 +1,6 @@
 const config = require("../../config.json");
 const Discord = require("discord.js");
-const { Client } = require("@zikeji/hypixel");
+const { Client } = require("hypixel-api-reborn");
 const utils = require("../utils");
 const mongoUtil = require("../../mongoUtil");
 const fetch = require("node-fetch");
@@ -32,8 +32,10 @@ module.exports = {
 				return message.reply(utils.getErrorEmbed("This user does not have an osu account linked"));
 			}
 
-			if (!userSettings.settings.privacy.show_osu) {
-				return message.reply(utils.getErrorEmbed("This user has their osu account hidden!"));
+			if (id != message.author.id) {
+				if (!userSettings.settings.privacy.show_osu) {
+					return message.reply(utils.getErrorEmbed("This user has their osu account hidden!"));
+				}
 			}
 
 			username = userSettings.osu_username;
